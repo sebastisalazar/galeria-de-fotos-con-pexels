@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+/*Todas las imagenes ocuparan el 100 de su padre*/
+img{
+    width: 100%;
+} 
+
+header>nav{
+    justify-content: center;
+}
+
+header>nav>ul{
+    
+    list-style-type:none;
+    align-items: center;
+    /* background-color: red; */
+    width: 70%;
+    justify-content: space-between;
+}
+
+/*NAV hijo directo de header y UL hijo directo de NAV y nav a su vez de header*/
+header>nav, header>nav>ul{
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 400px;
+}
+
+
+header>nav>ul>li:first-child{
+    
+    /* background-color: aqua;  */
+    width: 70%;
+}
+
+header>nav>ul>li:nth-child(2){
+    /* background-color: aqua; */
+    width: 30%;
+}
+
+header>nav>ul>li>a{
+    text-decoration: none;
+    color:white
+}
+
+.inputBuscar{
+    width: 60%;
+}
+
+.btnBuscar{
+    width: 30%;
+    margin-left: 10px;
+}
+
+.container{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.flexContainer>*{
+    text-align: center;
+    color: white;
+}
+
+.flexContainer>article{
+    background-color: darkgrey;
+    margin-bottom: 15px;
+}
+
+/*Para todo div que se encuentre dentro de article, (article) que se encuentre dentro una etiqueta con clase flexContainer */
+.flexContainer article div{
+    width: 100%;
+}
+
+/*Para todo p dentro de una etiqueta con clase .fullContainer. Misma propiedas para la etiqueta footer*/
+.fullContainer p, footer, header > nav{
+    font-size: 1rem;
+    text-align: center;
+    padding: 1rem;
+    color:white;
+    min-width:252px;
+    
+}
+
+ footer{
+    min-width:310px;
+}
+
+h1{
+    margin:20px 20px;
+    text-align: center;
+}
+.fullContainer, footer,header> nav {
+    width: 100%;
+    background-color: darkslategray;
+}
+
+.flexContainer {
+    flex-direction: column;
+    display: flex;
+}
+
+
+
+/* ===============================
+            768px
+=================================== */
+
+@media screen and (min-width:768px) {
+    
+    .flexContainer{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .flexContainer>* {
+        width: 50%;
+    }
+
+    .flexContainer article div{
+        width: 80%;
+    }
+
+    .inputBuscar{
+        max-width: 300px;
+        margin-left: 10px;
+    }
+    
+    .btnBuscar{
+        max-width: 80px;
+    }
+    
+}
+
+/* 768px */
+
+/* ===============================
+            992px
+=================================== */
+
+@media screen and (min-width:992px) {
+
+    .flexContainer{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .flexContainer>* {
+        width: 100%;
+    }
+
+    .flexContainer article div{
+        width: 100%;
+    }
+}
+
+/* 992px */
+
+/* ===============================
+            1200px
+=================================== */
+
+@media screen and (min-width:1200px) {
+    .container {
+        max-width: 1300px;
+    }
+}
+
+/* 1200px */
