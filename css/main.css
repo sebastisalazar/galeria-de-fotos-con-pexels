@@ -8,11 +8,47 @@
 
 /*Todas las imagenes ocuparan el 100 de su padre*/
 img{
+    display: inline-block;
     width: 100%;
+    height: 100%;
 } 
+
+footer{
+    min-width:310px;
+}
+
+h1{
+    margin:20px 20px;
+    text-align: center;
+}
+
+.flexContainer {
+    flex-direction: column;
+    display: flex;
+}
 
 header>nav{
     justify-content: center;
+}
+
+.inputBuscar{
+    width: 60%;
+}
+
+.btnBuscar{
+    width: 30%;
+    margin-left: 10px;
+}
+
+.container{
+    width: 80%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    min-width: 400px;
+}
+
+.fullContainer{
+    min-width: 400px;
 }
 
 header>nav>ul{
@@ -48,19 +84,6 @@ header>nav>ul>li>a{
     color:white
 }
 
-.inputBuscar{
-    width: 60%;
-}
-
-.btnBuscar{
-    width: 30%;
-    margin-left: 10px;
-}
-
-.container{
-    width: 80%;
-    margin: 0 auto;
-}
 
 .flexContainer>*{
     text-align: center;
@@ -69,12 +92,14 @@ header>nav>ul>li>a{
 
 .flexContainer>article{
     background-color: darkgrey;
-    margin-bottom: 15px;
+    padding: 5px;
+    align-items: center;
 }
 
 /*Para todo div que se encuentre dentro de article, (article) que se encuentre dentro una etiqueta con clase flexContainer */
 .flexContainer article div{
     width: 100%;
+    height: 80%;
 }
 
 /*Para todo p dentro de una etiqueta con clase .fullContainer. Misma propiedas para la etiqueta footer*/
@@ -87,23 +112,11 @@ header>nav>ul>li>a{
     
 }
 
- footer{
-    min-width:310px;
-}
-
-h1{
-    margin:20px 20px;
-    text-align: center;
-}
 .fullContainer, footer,header> nav {
     width: 100%;
     background-color: darkslategray;
 }
 
-.flexContainer {
-    flex-direction: column;
-    display: flex;
-}
 
 
 
@@ -116,13 +129,10 @@ h1{
     .flexContainer{
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
     }
     .flexContainer>* {
         width: 50%;
-    }
-
-    .flexContainer article div{
-        width: 80%;
     }
 
     .inputBuscar{
@@ -132,6 +142,10 @@ h1{
     
     .btnBuscar{
         max-width: 80px;
+    }
+    
+    header>nav>ul{
+        max-width: 1250px;
     }
     
 }
@@ -149,10 +163,6 @@ h1{
         flex-wrap: wrap;
     }
 
-    .flexContainer>* {
-        width: 100%;
-    }
-
     .flexContainer article div{
         width: 100%;
     }
@@ -167,6 +177,10 @@ h1{
 @media screen and (min-width:1200px) {
     .container {
         max-width: 1300px;
+    }
+
+    .flexContainer>* {
+        width: 33.3%;
     }
 }
 
