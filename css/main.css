@@ -33,11 +33,13 @@ header>nav{
 
 .inputBuscar{
     width: 60%;
+    font-size: 1.5rem;
 }
 
 .btnBuscar{
     width: 30%;
     margin-left: 10px;
+    font-size: 1.5rem;
 }
 
 .container{
