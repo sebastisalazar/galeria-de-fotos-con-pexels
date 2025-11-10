@@ -16,19 +16,19 @@ const imagenesPorCategoria = document.querySelector('.categoria')
 /*-------------------------------------------------------
 ------------------EVENTOS------------------------------
 ---------------------------------------------------------*/
-buscar.addEventListener('submit', (ev))
+// buscar.addEventListener('submit', (ev))
 
-document.addEventListener('click', (ev) =>{
+// document.addEventListener('click', (ev) =>{
 
-    // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
-    if(ev.target.matches('#buscar')) {
-        pintarImagenes(parametro)
+//     // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
+//     if(ev.target.matches('#buscar')) {
+//         pintarImagenes(parametro)
         
-    } else if (ev.target.matches('.categoria')) {
-       //evento que clicke a una de las imágenes por categoría. 
-    pintarImágenes(idCategoria)
-}
-})
+//     } else if (ev.target.matches('.categoria')) {
+//        //evento que clicke a una de las imágenes por categoría. 
+//     pintarImágenes(idCategoria)
+// }
+// })
 
 // /
 // //  para ello hay que darle una clase a esas imágenes y cada una tendrá un id con su categoría
@@ -44,12 +44,12 @@ document.addEventListener('click', (ev) =>{
 
 // //Evento que al hacer click en una imagen haga un pop up
 // // popUp(idImagen)
-document.addEventListener('click', (ev) =>{
-    //aquí el evento debería sacar la id de la imagen
-    const idImagen = ev.target.id 
-    popUp(idImagen)
-    }
-)
+// document.addEventListener('click', (ev) =>{
+//     //aquí el evento debería sacar la id de la imagen
+//     const idImagen = ev.target.id 
+//     popUp(idImagen)
+//     }
+// )
 
 // //evento que muestre las imágenes favoritas
 // document.addEventListener('click', (ev) =>{
@@ -110,6 +110,7 @@ console.log(llamadaAPI("nature",1,"small"))
 console.log(llamadaAPI("people",1,"small"))
 
 
+
 const validarBusqueda = (parametroDeBusqueda) => {
     
 
@@ -168,6 +169,22 @@ const pintarImagenes =async (de)  => {
 
 // }
 
+
+const pitarBotonesPaginacion = () => {
+    llamadaAPI()
+    // <div class="botonesPag">
+    //      <button id="revPage">revPage</button>
+    //      <p>nº de pág</p>
+    //      <button id="nextPage">nextPage</button>
+    //  </div>
+    const div = document.createElement('DIV')
+    const btnPrevPage = document.createElement('button')
+    const numDePagina = document.createElement('p')
+    const btnNextPage = document.createElement('button')
+
+    numDePagina.textContent = 
+
+}
 
 // const modificarLocal = (idImagen, array) {
 //     // pasos de la docu: (habría que pulirlo y colorcar las cosas en su sitio)
