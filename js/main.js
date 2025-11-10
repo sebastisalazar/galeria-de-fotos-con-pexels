@@ -16,19 +16,18 @@ const imagenesPorCategoria = document.querySelector('.categoria')
 /*-------------------------------------------------------
 ------------------EVENTOS------------------------------
 ---------------------------------------------------------*/
-buscar.addEventListener('submit', (ev))
+//buscar.addEventListener('submit', (ev))
 
-// document.addEventListener('click', (ev) =>{
-
-//     // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
-//     if(ev.target.matches('#buscar')) {
-//         pintarImagenes(parametro)
-        
-//     } else if (ev.target.matches('.categoria')) {
-//        //evento que clicke a una de las imágenes por categoría. 
-//     pintarImágenes(idCategoria)
-// }
-// })
+document.addEventListener('click', (ev) =>{
+    // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
+    if(ev.target.matches('#buscar')) {
+        pintarImagenes(parametro)
+    } else if (ev.target.matches('.categoria')) {
+       //evento que clicke a una de las imágenes por categoría.
+        console.log("haz hecho click en una categoria!")
+        pintarPaginacion(ev.target.id);
+    }
+})
 
 // /
 // //  para ello hay que darle una clase a esas imágenes y cada una tendrá un id con su categoría
@@ -44,12 +43,12 @@ buscar.addEventListener('submit', (ev))
 
 // //Evento que al hacer click en una imagen haga un pop up
 // // popUp(idImagen)
-document.addEventListener('click', (ev) =>{
-    //aquí el evento debería sacar la id de la imagen
-    const idImagen = ev.target.id 
-    popUp(idImagen)
-    }
-)
+// document.addEventListener('click', (ev) =>{
+//     //aquí el evento debería sacar la id de la imagen
+//     const idImagen = ev.target.id 
+//     popUp(idImagen)
+//     }
+// )
 
 // //evento que muestre las imágenes favoritas
 // document.addEventListener('click', (ev) =>{
