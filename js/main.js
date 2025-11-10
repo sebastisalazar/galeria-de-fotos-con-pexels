@@ -5,8 +5,9 @@
 const apiKey1="WdGuOuXQaXIVOWWpWP1EHxJb0tx7bJg2ncPFuRf8ASUIEQpiSMkjiwgA"
 const apiKey2="23EAVF3IG22POMNw02GievOTkgYTpupamxpWVO2aG07T1fEYlh0Zse7g"
 const urlBase="https://api.pexels.com/v1"
+let page = 1
 
-const categorias=["Naturaleza","Tecnologia","Personas"]
+const categorias=["Nature","Technology","People"]
 //capturar imágenes del dom
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
 const imagenesPorCategoria = document.querySelector('.categoria')
@@ -26,6 +27,18 @@ document.addEventListener('click', (ev) =>{
        //evento que clicke a una de las imágenes por categoría.
         console.log("haz hecho click en una categoria!")
         pintarPaginacion(ev.target.id);
+
+    } else if (ev.target.matches('#prevPage')) {
+        console.log('Has hecho click en prev Page')
+        prevPage()
+
+    } else if (ev.target.matches('#nextPage')) {
+        console.log('Has hecho click en nextPage')
+        const url=ev.target.href;
+
+        console.log(url)
+
+        //search?query=${endpoint}?page=${page}&per_page=${perPage}&size=${size}
     }
 })
 
@@ -85,15 +98,16 @@ document.addEventListener('click', (ev) =>{
  * @param {String} endpoint es el valor de la query a buscar
  * @returns Una promesa con el objeto conteniendo todas las fotos
  */
-const llamadaAPI=async(endpoint,perPage,size)=>{
+const llamadaAPI=async(endpoint,page, perPage,size)=>{
     
-    const query=`search?query=${endpoint}&per_page=${perPage}&size=${size}l`
+    const query=`search?query=${endpoint}?page=${page}&per_page=${perPage}&size=${size}`
+    console.log(query);
     try {
         const resp=await fetch(`${urlBase}/${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
 
         if (resp.ok) {
             const data= await resp.json();
-            //console.log(data)
+            // console.log(data)
             return data
         }else{
              throw `Ha habido un error al cargar el endpoint ${endpoint}`
@@ -104,9 +118,9 @@ const llamadaAPI=async(endpoint,perPage,size)=>{
 
 }
 
-console.log(llamadaAPI("technology",1,"small"))
-console.log(llamadaAPI("nature",1,"small"))
-console.log(llamadaAPI("people",1,"small"))
+// console.log(llamadaAPI("technology",1,"small"))
+// console.log(llamadaAPI("nature",1,"small"))
+// console.log(llamadaAPI("people",1,"small"))
 
 
 const validarBusqueda = (parametroDeBusqueda) => {
@@ -132,8 +146,8 @@ const pintarImagenes =async ()  => {
         for (let index = 0; index < categorias.length; index++) {
             
             //por cada categoria se llama a la API
-            const resp= await llamadaAPI(categorias[index],1,"small");
-        
+            const resp= await llamadaAPI(categorias[index],page , 1,"small");
+            
             resp.photos.forEach(element => {
 
                 const article=document.createElement("ARTICLE")
@@ -142,6 +156,7 @@ const pintarImagenes =async ()  => {
                 const h3=document.createElement("H3");
                 const p=document.createElement("A");
 
+                
                 img.src=element.src.original
                 img.alt=element.alt
                 h3.textContent=categorias[index]
@@ -169,18 +184,23 @@ const pintarImagenes =async ()  => {
 
 pintarImagenes();
 
-const pintarPaginacion =async (categoria)  => {
+const pintarPaginacion =async (categoria,page)  => {
     
     const resultados = document.querySelector("#resultados")
     resultados.innerHTML="";
     const fragmento=document.createDocumentFragment();
+    const numPage=1;
+
+    if(page=!1){
+        numPage=page;
+    }
+
     try {
 
+        //por cada categoria se llama a la API
+         const resp= await llamadaAPI(categoria,page, 9,"small");
         //Recorre el numero de catergoria
-        for (let index = 0; index < 1; index++) {
-            
-            //por cada categoria se llama a la API
-            const resp= await llamadaAPI(categoria,9,"small");
+        for (let index = 0; index < resp.photos.length; index++) {
             
             console.log(resp)
             resp.photos.forEach(element => {
@@ -204,16 +224,55 @@ const pintarPaginacion =async (categoria)  => {
                 div.append(h3);
                 div.append(p);
 
-                fragmento.append(article)
-                resultados.append(fragmento)
 
-            });
+                fragmento.append(article)
+                
+
+         });
+
+        const divDos = document.createElement('DIV')
+        const btnPrevPage = document.createElement('button')
+        const numDePagina = document.createElement('p')
+        const btnNextPage = document.createElement('button')
+        // const anext = document.createElement('a')
+        // const aprev = document.createElement('a')
+    
+
+        numDePagina.textContent = resp.page
+        // anext.textContent = 'siguiente'
+        // aprev.textContent = 'anterior'
+        btnPrevPage.textContent = 'Anterior'
+        btnNextPage.textContent = 'Siguiente'
+        // anext.href = resp.next_page
+        // aprev.href = resp.prev_page
+
+        // aprev.id = 'prevPage'
+        // anext.id = 'nextPage'
+        
+        // btnNextPage.append(anext)
+        // btnPrevPage.append(aprev)
+        // divDos.append(aprev)
+        divDos.append(btnPrevPage)
+        divDos.append(numDePagina)
+        // divDos.append(anext)
+        divDos.append(btnNextPage)
+        fragmento.append(divDos)
+        resultados.append(fragmento)
         }
         
     } catch (error) {
         throw error
     }
  
+}
+
+const nextPage =  () => {
+    // page = data.next_page 
+}
+const prevPage =  () => {
+    if (data.page > 1) {
+
+    }
 }
 
 
