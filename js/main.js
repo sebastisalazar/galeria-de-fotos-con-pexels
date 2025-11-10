@@ -47,7 +47,7 @@ document.addEventListener('click', (ev) =>{
 //evento que muestre las imágenes favoritas
 document.addEventListener('click', (ev) =>{
     if(ev.target.matches('#botonFavoritas')) {
-        pintarImágenes(favoritas) //ver bien dónde sacarlas
+        pintarImágenes(favoritas, orientaciónpordefecto) //ver bien dónde sacarlas
     }
 })
 
@@ -76,8 +76,7 @@ document.addEventListener('click', (ev) =>{
 ---------------------------------------------------------*/
 
 const validarBusqueda = (parametroDeBusqueda) => {
-    //mis dudas de si meter esto. molaría por quedar bien, pero quizás lo
-    //metería si da tiempo??
+    
 
 }
 
@@ -87,22 +86,32 @@ const borrarImagenes = () =>{
     // de un div y eliminarlo. luego al pintar, volverlo a meter
 }
 
-const arrayDeImagenes = (parametroDeBusqueda) => {
-    //con una función asyncrona que llame a la Api y nos de el array de objetos 
+const llamarALaApi = async (endPoint) =>{
+//con una función asyncrona que llame a la Api y nos de el array de objetos 
     // mirar la doc de la api para ver dónde hay que colocar en la url el parámetro,
     //si es necesario, hacer más fuciones (una por cada evento o según url)
+    
+}
+const arrayDeImagenes = (parametroDeBusqueda) => {
+    llamarALaApi()
+    .then()
+    .catch()
     //sacar del objeto la imagen, título y autor
-    // pintar boton favoritos
+    return array
 }
 
 
-const pintarImágenes = (parametroDeBusqueda)  => {
+const pintarImágenes = (parametroDeBusqueda, orientacion)  => {
+    // let orientacion = 'todas' // orientación por defecto para que pinte
     //que borre las imágenes del html (llamar a la función borrarImágenes())
     borrarImagenes()
     arrayDeImagenes()
     // que nos pinte en el html el array con las imágenes:
     // hacer un forEach que pinte los elementos del html : imagen, título, autor
     const galeria = document.createElement('DIV')
+    const opciones =
+    const textoBusqueda
+
     arrayDeImagenes.array.forEach(element => {
 
         const section = 
@@ -150,22 +159,23 @@ const guardarFavoritos = (idImagen) => {
     // el array tal cual o icluso que elimine la foto de favoritos, si no, que la añada
     if(favoritos.includes(idImagen)) {
         // return favoritos // array tal cual
-        return favoritos.filter(imagen => imagen != imagen.icludes(idImagen))
+         favoritos.filter(imagen => imagen != imagen.icludes(idImagen))
         // te la eliminaría de favoritos (mirar a ver si funciona que lo he puesto un poco como me ha salido)
         
 
     } else {
-        return favoritos = [...favoritos, idImagen]
+         favoritos = [...favoritos, idImagen]
     }
     modificarLocal()
 }
 
 
 const popUpImagen = (idImagen) => {
-    //esto se haría con el css?
+    //para el final o abrir la imagen en una página y ya está
 }
 
 const filtrarPorOrientacion = (orientacion) => {
+    pintarImágenes(filtroBusqueda, parametro)
     
 }
 
