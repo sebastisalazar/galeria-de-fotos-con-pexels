@@ -24,11 +24,11 @@ buscar.addEventListener('submit', (ev))
 //     if(ev.target.matches('#buscar')) {
 //         pintarImagenes(parametro)
         
-    } else if (ev.target.matches('.categoria')) {
-       //evento que clicke a una de las imágenes por categoría. 
-    pintarImágenes(idCategoria)
-}
-})
+//     } else if (ev.target.matches('.categoria')) {
+//        //evento que clicke a una de las imágenes por categoría. 
+//     pintarImágenes(idCategoria)
+// }
+// })
 
 // /
 // //  para ello hay que darle una clase a esas imágenes y cada una tendrá un id con su categoría
@@ -166,6 +166,7 @@ const pintarImagenes =async ()  => {
     }
  
 }
+
 
 pintarImagenes();
 
