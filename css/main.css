@@ -90,18 +90,31 @@ header>nav>ul>li>a{
 .flexContainer>*{
     text-align: center;
     color: white;
+
 }
 
 .flexContainer>article{
     background-color: darkgrey;
     padding: 5px;
     align-items: center;
+    /* margin: 5px */
+}
+
+#selectorOrientacion {
+    width: 70%;
+    /* font-size: 2rem; */
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+    margin: 10px 0;
+    
 }
 
 /*Para todo div que se encuentre dentro de article, (article) que se encuentre dentro una etiqueta con clase flexContainer */
 .flexContainer article div{
     width: 100%;
     height: 80%;
+    
 }
 
 /*Para todo p dentro de una etiqueta con clase .fullContainer. Misma propiedas para la etiqueta footer*/
@@ -135,6 +148,7 @@ header>nav>ul>li>a{
     }
     .flexContainer>* {
         width: 50%;
+        /* width: calc(50% - 5px); */
     }
 
     .inputBuscar{
@@ -183,6 +197,7 @@ header>nav>ul>li>a{
 
     .flexContainer>* {
         width: 33.3%;
+        /* width: calc(33.3% - 5px); */
     }
 }
 
