@@ -6,7 +6,7 @@
     -moz-box-sizing: border-box;
 }
 
-/*Todas las imagenes ocuparan el 100 de su padre*/
+/*Todas las imagenes ouparan el 100 de su padre*/
 img{
     display: inline-block;
     width: 100%;

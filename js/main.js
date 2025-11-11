@@ -338,7 +338,7 @@ const anadirLocalFavoritos = async (idImagen) => {
         const existe= arrayLocal.find((obj)=>obj.id==idImagen)
 
         if(!existe) {
-            console.log('no existe este elemento')
+            // console.log('no existe este elemento')
 
             
             setearLocal( [...arrayLocal, newObject])
@@ -353,6 +353,7 @@ const anadirLocalFavoritos = async (idImagen) => {
 const pintarFavoritos = ()  => {
     
     const favoritos = document.querySelector("#imagenesFavoritos")
+   
     
     favoritos.innerHTML="";
 
@@ -367,7 +368,8 @@ const pintarFavoritos = ()  => {
 
         //Recorre el numero de catergoria
         // for (let index = 0; index < 1; index++) {
-            
+            const div=document.createElement("DIV")
+            div.className = 'flexContainer'
 
             // page=resp.page;
             // console.log(page)
@@ -377,18 +379,13 @@ const pintarFavoritos = ()  => {
                 // console.log(element)
 
                 const article=document.createElement("ARTICLE")
-                const div=document.createElement("DIV")
+                const div2=document.createElement("DIV")
                 const img=document.createElement("IMG");
                 const h3=document.createElement("H3");
                 const p=document.createElement("P");
                 const btnQuitarFav=document.createElement("BUTTON")
 
-            //     const newObject={
-            //     id: resp.id,
-            //     src: resp.src.original,
-            //     alt: resp.alt,
-            //     photographer: resp.photographer
-            // }
+                
 
                 img.src=element.src
                 img.alt=element.alt
@@ -398,21 +395,23 @@ const pintarFavoritos = ()  => {
                 // h3.className ="categoria"
                 p.textContent="By "+element.photographer
 
-                btnQuitarFav.textContent="❤️ Quitar de Favoritos"  //"\u2665"
+                btnQuitarFav.textContent="💔 Quitar de Favoritos"  //"\u2665"
                 btnQuitarFav.className="btnQFav"
                 btnQuitarFav.id = element.id
 
-                article.append(div);
-                div.append(img);
-                div.append(h3);
-                div.append(p);
-                div.append(btnQuitarFav)
+                div.append(article)
+                article.append(div2);
+                div2.append(img);
+                div2.append(h3);
+                div2.append(p);
+                div2.append(btnQuitarFav)
 
-                fragmento.append(article)
-                favoritos.append(fragmento)
+                
 
             });
-        // const botones=document.createElement("DIV")
+        fragmento.append(div)
+        favoritos.append(fragmento)
+                // const botones=document.createElement("DIV")
         // const nextPage=document.createElement("BUTTON")
         // const previousPage=document.createElement("BUTTON")
         // const currentPage=document.createElement("BUTTON")
@@ -434,16 +433,17 @@ const pintarFavoritos = ()  => {
 }
 
 const quitarDeFavoritos = (idImagen) => {
-    console.log(idImagen)
+    // console.log(idImagen)
     const arrayLocal = obtenerLocal('favoritos')
-    console.log(arrayLocal)
+    // console.log(arrayLocal)
     // const indiceFoto = arrayLocal.findIndex(element => element.id == idImagen)
     // console.log(indiceFoto)
     // const tercerArray = arrayLocal.map(elemento => elemento.id)
     // console.log(tercerArray)
-    const nuevoarrayLocal = arrayLocal.filter((element) => element.id !== idImagen)
-    console.log(nuevoarrayLocal)
-    // setearLocal(nuevoarrayLocal)
+    const nuevoarrayLocal = arrayLocal.filter((element) => element.id != idImagen)
+    // console.log(nuevoarrayLocal)
+    setearLocal(nuevoarrayLocal)
+    pintarFavoritos()     
 
 }
 
