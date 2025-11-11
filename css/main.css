@@ -53,16 +53,31 @@ header>nav{
     min-width: 400px;
 }
 
-#resultados{
-    margin-top: 20px;
+#resultados, #filtro{
+    margin: 20px 0;
+}
+
+#filtro{
+    padding: 10px 0;
+    color:black;
+    width: 30%;
+    text-align: center;
 }
 
 #btnFav{
     font-size: 1.5rem;
 }
 
+#resultados > article>div{
+    height: 70%;
+}
+
+#cajaResultados{
+    text-align: center;
+}
+
 #currentPage, #nextPage, #previousPage{
-    margin:20px 10px;
+    margin:30px 10px;
     padding: 10px 20px;
 }
 
@@ -132,7 +147,7 @@ header>nav>ul>li>a{
 /*Para todo div que se encuentre dentro de article, (article) que se encuentre dentro una etiqueta con clase flexContainer */
 .flexContainer article div{
     width: 100%;
-    height: 80%;
+    height: 80%;*/
     
 }
 

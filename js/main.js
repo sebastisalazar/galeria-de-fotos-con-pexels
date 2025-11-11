@@ -5,10 +5,15 @@
 const apiKey1="WdGuOuXQaXIVOWWpWP1EHxJb0tx7bJg2ncPFuRf8ASUIEQpiSMkjiwgA"
 const apiKey2="23EAVF3IG22POMNw02GievOTkgYTpupamxpWVO2aG07T1fEYlh0Zse7g"
 const urlBase="https://api.pexels.com/v1"
-
+const fragmento=document.createDocumentFragment();
+const resultados = document.querySelector("#resultados")
+const cabeceraResultados = document.querySelector("#cajaResultados")
+const categorias=["Naturaleza","Tecnologia","Personas"]
+const categoriasCaja = document.querySelector("#categorias")
 
 let categoriaSeleccionada="";
 let page=1;
+let orientacion="landscape"
 
 //capturar imágenes del dom
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
@@ -23,13 +28,23 @@ const imagenesPorCategoria = document.querySelector('.categoria')
 
 document.addEventListener('click', (ev) =>{
     // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
-    if(ev.target.matches('#buscar')) {
-        pintarImagenes(parametro)
+    if(ev.target.matches('.btnBuscar')) {
+        //pintarImagenes()
+
+        const aBuscar=document.querySelector("#buscar").value;
+
+        if(validarBusqueda(aBuscar)==true){
+
+            setearCategoria(aBuscar)
+            pintarPaginacion();
+            
+        }
+        
+
     } else if (ev.target.matches('.categoria')) {
        //evento que clicke a una de las imágenes por categoría.
         //console.log("haz hecho click en una categoria!")
-        categoriaSeleccionada=ev.target.id
-        page=1;
+        setearCategoria(ev.target.id)
         pintarPaginacion();
     }else if (ev.target.matches('#nextPage')) {
        //evento que clicke a una de las imágenes por categoría.
@@ -37,18 +52,47 @@ document.addEventListener('click', (ev) =>{
         pintarPaginacion();
     }else if (ev.target.matches('#previousPage')) {
        //evento que clicke a una de las imágenes por categoría.
-
+        
         if(page>1){
             page--;
-            pintarPaginacion();
         }
-        
+        pintarPaginacion();
+
 
     }else if (ev.target.matches('#btnFav')) {
        //evento que clicke a una de las imágenes por categoría.
         alert("Se ha añadido tu foto a favoritos!")
     }
 })
+
+document.addEventListener("change",(ev)=>{
+
+    if(ev.target.matches('#filtro')){
+        //console.log("Se ha cambiado el valor del select")
+        orientacion=ev.target.value;
+        //console.log(orientacion)
+        pintarPaginacion();
+    }
+
+})
+
+const setearCategoria=(nuevoValor)=>{
+        
+        categoriaSeleccionada=nuevoValor;
+}
+const limpiarfiltro=()=>{
+    const select=document.querySelector("section>select")
+        if(select!==null){
+            select.remove()
+        }
+}
+
+const limpiarBotonesPaginacion=()=>{
+    const div=document.querySelector("#paginacion")
+        if(div!==null){
+            div.remove()
+        }
+}
 
 // /
 // //  para ello hay que darle una clase a esas imágenes y cada una tendrá un id con su categoría
@@ -60,16 +104,6 @@ document.addEventListener('click', (ev) =>{
 //     }
 // })
 
-
-
-// //Evento que al hacer click en una imagen haga un pop up
-// // popUp(idImagen)
-// document.addEventListener('click', (ev) =>{
-//     //aquí el evento debería sacar la id de la imagen
-//     const idImagen = ev.target.id 
-//     popUp(idImagen)
-//     }
-// )
 
 // //evento que muestre las imágenes favoritas
 // document.addEventListener('click', (ev) =>{
@@ -86,16 +120,6 @@ document.addEventListener('click', (ev) =>{
 //     }
 // })
 
-// //Evento filtro orientación fotos
-// document.addEventListener('click', (ev) =>{
-//     if(ev.target.matches()) {
-//         filtrarPorOrientacion(orientacion)
-//         // esto igual se puede hacer directamente con el evento categorías, por ejemplo
-//         // si es que la url coincide, si no se haría este evento que llame
-//         // a esta funcion la cual sería parecida (mirar doc de la api)
-//     }
-// })
-
 
 
 /*-------------------------------------------------------
@@ -106,10 +130,11 @@ document.addEventListener('click', (ev) =>{
  * @param {String} endpoint es el valor de la query a buscar
  * @returns Una promesa con el objeto conteniendo todas las fotos
  */
-const llamadaAPI=async(endpoint,perPage,size)=>{
+const llamadaAPI=async(endpoint,perPage,size,orientacion)=>{
     
     
-    const query=`search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}l`
+    const query=`search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
+    //console.log(query)
     try {
         const resp=await fetch(`${urlBase}/${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
         //console.log(query)
@@ -126,9 +151,16 @@ const llamadaAPI=async(endpoint,perPage,size)=>{
 
 }
 
-
 const validarBusqueda = (parametroDeBusqueda) => {
-    
+    const regex=/^[a-zA-Z]+$/u
+
+    if(regex.test(parametroDeBusqueda)){
+        return true
+    }else{
+        console.log("El campo busqueda no admite valores numericos")
+        
+        return false
+    }
 
 }
 
@@ -140,9 +172,7 @@ const validarBusqueda = (parametroDeBusqueda) => {
 
 const pintarImagenes =async ()  => {
     
-    const categorias=["Naturaleza","Tecnologia","Personas"]
-    const categoriasCaja = document.querySelector("#categorias")
-    const fragmento=document.createDocumentFragment();
+    
 
     try {
 
@@ -150,8 +180,8 @@ const pintarImagenes =async ()  => {
         for (let index = 0; index < categorias.length; index++) {
             
             //por cada categoria se llama a la API
-            const resp= await llamadaAPI(categorias[index],1,"small");
-            console.log(resp)
+            const resp= await llamadaAPI(categorias[index],1,"small",orientacion);
+            //console.log(resp)
             resp.photos.forEach(element => {
 
                 const article=document.createElement("ARTICLE")
@@ -184,29 +214,49 @@ const pintarImagenes =async ()  => {
 }
 
 
-pintarImagenes();
+
 
 const pintarPaginacion =async ()  => {
-    
-    const resultados = document.querySelector("#resultados")
-    
-    resultados.innerHTML="";
+    limpiarBotonesPaginacion();
+    limpiarfiltro();
+    resultados.innerHTML=""
 
+    const filtroOrientacion=document.createElement("SELECT");
+    filtroOrientacion.id="filtro"
+
+    const horizontal=document.createElement("OPTION");
+    const vertical=document.createElement("OPTION");
+
+    horizontal.textContent="Horizontal";
+    horizontal.value="landscape";
+
+    vertical.value="portrait"
+    vertical.textContent="Vertical"
+
+    if(horizontal.value==orientacion){
+        horizontal.selected="selected"
+    }else{
+        vertical.selected="selected"
+    }
+    
+
+    filtroOrientacion.append(horizontal);
+    filtroOrientacion.append(vertical);
+
+    cabeceraResultados.prepend(filtroOrientacion)
     const mensajeResultados = document.querySelector("#mensajeResultados")
-
-    const fragmento=document.createDocumentFragment();
 
     try {
 
         mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
-        const resp= await llamadaAPI(categoriaSeleccionada,9,"small");
+        const resp= await llamadaAPI(categoriaSeleccionada,9,"small",orientacion);
 
         //Recorre el numero de catergoria
         for (let index = 0; index < 1; index++) {
             
 
             page=resp.page;
-            console.log(page)
+            //console.log(page)
             //console.log(resp)
 
             resp.photos.forEach(element => {
@@ -220,6 +270,7 @@ const pintarPaginacion =async ()  => {
 
                 img.src=element.src.original
                 img.alt=element.alt
+                img.id=element.id
                 h3.textContent=element.alt
                 h3.id=element.alt
                 h3.className ="categoria"
@@ -254,9 +305,10 @@ const pintarPaginacion =async ()  => {
         currentPage.id="currentPage"
         botones.id="paginacion"
 
+        
         botones.append(previousPage,currentPage,nextPage);
         fragmento.append(botones)
-        resultados.append(fragmento)
+        cabeceraResultados.append(fragmento)
         
     } catch (error) {
         throw error
@@ -316,3 +368,5 @@ const pintarPaginacion =async ()  => {
 /*-------------------------------------------------------
 ------------------INVOCACIONES------------------------------
 ---------------------------------------------------------*/
+
+pintarImagenes();
