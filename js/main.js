@@ -2,37 +2,52 @@
 ------------------VARIABLES------------------------------
 ---------------------------------------------------------*/
 
+//VARIABLES PARA LA API
 const apiKey1="WdGuOuXQaXIVOWWpWP1EHxJb0tx7bJg2ncPFuRf8ASUIEQpiSMkjiwgA"
 const apiKey2="23EAVF3IG22POMNw02GievOTkgYTpupamxpWVO2aG07T1fEYlh0Zse7g"
 const urlBase="https://api.pexels.com/v1"
+
+//VARIABLES PARA PINTAR
 const fragmento=document.createDocumentFragment();
+
+//VARIABLES PARA CAPTURAR ELEMENTOS DEL DOM PARA PODER PINTAR
 const resultados = document.querySelector("#resultados")
 const cabeceraResultados = document.querySelector("#cajaResultados")
+
+//VARIABLES CATEGORIAS para TENDENDCIAS
 const categorias=["Naturaleza","Tecnologia","Personas"]
+
+//CAJA DONDE SE PINTARA LAS CATEGORIAS DE TENDENCIAS
 const categoriasCaja = document.querySelector("#categorias")
 
+//INICIALIZACION PARA el parametro SEARCH de LA API
 let categoriaSeleccionada="";
+//INICIALIZACION PARA el parametro PAGE de LA API
 let page=1;
+//INICIALIZACION PARA el parametro ORIENTATION de LA API
 let orientacion="landscape"
 
-//capturar imágenes del dom
+//VARIABLE QUE CAPTURA EL BOTON (necesario para el evento)
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
+
+//CAPTURA EL LINK DE CADA CATEGORIA
 const imagenesPorCategoria = document.querySelector('.categoria')
 
-//hacer llamamamiento al localStorage para sacar las favoritas
 
 /*-------------------------------------------------------
 ------------------EVENTOS------------------------------
 ---------------------------------------------------------*/
-//buscar.addEventListener('submit', (ev))
 
+// TODO EVENTO CLICK
 document.addEventListener('click', (ev) =>{
-    // evento para que el botón buscar te muestre las imágenes que le damos como parámentro en el imput
+    
+    //EVENTO CLICK en el boton BUSCAR
     if(ev.target.matches('.btnBuscar')) {
-        //pintarImagenes()
-
+        
+        //CAPTURA EL VALOR INTRODUCIDO EN EL CAMPO TEXTO A BUSCAR
         const aBuscar=document.querySelector("#buscar").value;
 
+        //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
         if(validarBusqueda(aBuscar)==true){
 
             setearCategoria(aBuscar)
@@ -40,46 +55,59 @@ document.addEventListener('click', (ev) =>{
             
         }
         
-
+        //SI SE HA HECHO CLICK SOBRE un LINK CON CATEGORIA 
     } else if (ev.target.matches('.categoria')) {
-       //evento que clicke a una de las imágenes por categoría.
+       
         //console.log("haz hecho click en una categoria!")
-        setearCategoria(ev.target.id)
-        pintarPaginacion();
+        setearCategoria(ev.target.id) //Setea la categoria(parametro de search API) cogiendola del ID del LINK
+        pintarPaginacion(); //PINTA
+
+        //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID NEXTPAGE
     }else if (ev.target.matches('#nextPage')) {
-       //evento que clicke a una de las imágenes por categoría.
-        page++;
-        pintarPaginacion();
+
+        page++; //suma 1 a la paginacion que se muestra en el momento
+        pintarPaginacion(); //PINTA
+
+        //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID PREVIOUSPAGE
     }else if (ev.target.matches('#previousPage')) {
-       //evento que clicke a una de las imágenes por categoría.
         
-        if(page>1){
-            page--;
+        if(page>1){//revisa si la pagina es mayor a 1
+            page--; //si lo es resta
         }
-        pintarPaginacion();
+        pintarPaginacion(); //PINTA
 
-
+        //SI SE HA HECHO CLICK SOBRE UN BOTON DE AÑADIR A FAVORITOS
     }else if (ev.target.matches('#btnFav')) {
        //evento que clicke a una de las imágenes por categoría.
         alert("Se ha añadido tu foto a favoritos!")
     }
 })
 
+//EVENTO CHANGE PARA ESCUCHAR EL BOTON SELECT
+
 document.addEventListener("change",(ev)=>{
 
+    //SI ES EN SELECT CON ID FILTRO
     if(ev.target.matches('#filtro')){
         //console.log("Se ha cambiado el valor del select")
-        orientacion=ev.target.value;
+        orientacion=ev.target.value; //Setea la categoria(parametro de search API)
         //console.log(orientacion)
-        pintarPaginacion();
+        pintarPaginacion(); //PINTA
     }
 
 })
 
+/**
+ * Funcion que setea un nuevo valor a categoria(parametro de search API)
+ * @param {String} nuevoValor de busqueda
+ */
 const setearCategoria=(nuevoValor)=>{
-        
         categoriaSeleccionada=nuevoValor;
 }
+
+/**
+ * 
+ */
 const limpiarfiltro=()=>{
     const select=document.querySelector("section>select")
         if(select!==null){
