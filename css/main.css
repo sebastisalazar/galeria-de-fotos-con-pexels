@@ -17,7 +17,7 @@ footer{
     min-width:310px;
 }
 
-h1{
+h1,h2{
     margin:20px 20px;
     text-align: center;
 }
@@ -51,6 +51,25 @@ header>nav{
 
 .fullContainer{
     min-width: 400px;
+}
+
+#resultados{
+    margin-top: 20px;
+}
+
+#btnFav{
+    font-size: 1.5rem;
+}
+
+#currentPage, #nextPage, #previousPage{
+    margin:20px 10px;
+    padding: 10px 20px;
+}
+
+#paginacion{
+    font-size: 1rem;
+    color:black;
+    text-align: center;
 }
 
 header>nav>ul{
