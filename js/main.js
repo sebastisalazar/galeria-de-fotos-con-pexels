@@ -80,7 +80,7 @@ document.addEventListener('click', (ev) =>{
         pintarPaginacion(); //PINTA
 
         //SI SE HA HECHO CLICK SOBRE UN BOTON DE AÑADIR A FAVORITOS
-    }else if (ev.target.matches('#btnFav')) {
+    }else if (ev.target.matches('.btnFav')) {
 
        //evento que clicke a una de las imágenes por categoría.
         console.log("Se ha añadido tu foto a favoritos!")
@@ -88,7 +88,10 @@ document.addEventListener('click', (ev) =>{
     } 
     else if (ev.target.matches('.btnQFav')) {
         quitarDeFavoritos(ev.target.id)
-    }
+    } 
+    // else if (ev.target.matches('#pintarFavoritos')) {
+    //     pintarFavoritos()
+    // }
 })
 
 //EVENTO CHANGE PARA ESCUCHAR EL BOTON SELECT
@@ -386,9 +389,9 @@ const llamadaApiFavoritos = async (idImagen) => {
 const obtenerLocal = (identificador) => {
     // console.log({identificador})
      const arrayLocal=JSON.parse(localStorage.getItem(identificador)) || []
-    //  console.log(arrayLocal, ' en obtenerLocal')
-     return arrayLocal
-    // return JSON.parse(localStorage.getItem(identificador)) || []
+     console.log(arrayLocal, ' en obtenerLocal')
+    //  return arrayLocal
+    return JSON.parse(localStorage.getItem(identificador)) || []
     // return []
 }
 
@@ -403,6 +406,7 @@ const setearLocal = (array) =>{
 }
 
 const anadirLocalFavoritos = async (idImagen) => {
+    console.log(idImagen)
     // const seccionFavoritos = document.querySelector('#imagenesFavoritos')
     // seccionFavoritos.innerHTML = ''
     // const fotosFavoritos = document.createDocumentFragment()
@@ -413,7 +417,7 @@ const anadirLocalFavoritos = async (idImagen) => {
 
         const arrayLocal = obtenerLocal('favoritos')
         // const arrayLocal = []
-        // console.log(arrayLocal)
+        console.log(arrayLocal)
 
         const newObject={
                 id: resp.id,
