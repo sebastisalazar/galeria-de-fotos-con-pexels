@@ -51,7 +51,6 @@ document.addEventListener('click', (ev) =>{
 
         //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
         if(validarBusqueda(aBuscar)==true){
-
             setearCategoria(aBuscar)
             pintarPaginacion();
             
@@ -172,16 +171,15 @@ const limpiarBotonesPaginacion=()=>{
 const llamadaAPI=async(endpoint,perPage,size,orientacion)=>{
     
     let query;
-    console.log(endpoint)
-    console.log(typeof endpoint!="number")
+
     if(isNaN(endpoint)){
         query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
     }else{
         query=`${urlBase}/photos/${endpoint}`
-        console.log(query)
+        //console.log(query)
     }
     
-    console.log(query)
+    //console.log(query)
     try {
         const resp=await fetch(`${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
         //console.log(query)
@@ -396,7 +394,7 @@ const pintarPaginacion =async ()  => {
 const obtenerLocal = (identificador) => {
     // console.log({identificador})
      const arrayLocal=JSON.parse(localStorage.getItem(identificador)) || []
-     console.log(arrayLocal, ' en obtenerLocal')
+     //console.log(arrayLocal, ' en obtenerLocal')
     //  return arrayLocal
     return JSON.parse(localStorage.getItem(identificador)) || []
     // return []
@@ -413,18 +411,18 @@ const setearLocal = (array) =>{
 }
 
 const anadirLocalFavoritos = async (idImagen) => {
-    console.log(idImagen)
+    //console.log(idImagen)
     // const seccionFavoritos = document.querySelector('#imagenesFavoritos')
     // seccionFavoritos.innerHTML = ''
     // const fotosFavoritos = document.createDocumentFragment()
     
     try {
         const resp = await llamadaAPI(idImagen)
-         console.log({resp})
+         //console.log({resp})
 
         const arrayLocal = obtenerLocal('favoritos')
         // const arrayLocal = []
-        console.log(arrayLocal)
+        //console.log(arrayLocal)
 
         const newObject={
                 id: resp.id,
@@ -462,7 +460,7 @@ const pintarFavoritos = ()  => {
 
         // mensajeResultados.textContent='Imágenes favoritas'
         const arrayLocal = obtenerLocal('favoritos')
-        console.log(arrayLocal)
+        //console.log(arrayLocal)
 
         //Recorre el numero de catergoria
         // for (let index = 0; index < 1; index++) {
