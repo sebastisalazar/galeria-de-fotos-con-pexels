@@ -6,7 +6,10 @@ const apiKey1="WdGuOuXQaXIVOWWpWP1EHxJb0tx7bJg2ncPFuRf8ASUIEQpiSMkjiwgA"
 const apiKey2="23EAVF3IG22POMNw02GievOTkgYTpupamxpWVO2aG07T1fEYlh0Zse7g"
 const urlBase="https://api.pexels.com/v1"
 
-const categorias=["Naturaleza","Tecnologia","Personas"]
+
+let categoriaSeleccionada="";
+let page=1;
+
 //capturar imágenes del dom
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
 const imagenesPorCategoria = document.querySelector('.categoria')
@@ -24,8 +27,26 @@ document.addEventListener('click', (ev) =>{
         pintarImagenes(parametro)
     } else if (ev.target.matches('.categoria')) {
        //evento que clicke a una de las imágenes por categoría.
-        console.log("haz hecho click en una categoria!")
-        pintarPaginacion(ev.target.id);
+        //console.log("haz hecho click en una categoria!")
+        categoriaSeleccionada=ev.target.id
+        page=1;
+        pintarPaginacion();
+    }else if (ev.target.matches('#nextPage')) {
+       //evento que clicke a una de las imágenes por categoría.
+        page++;
+        pintarPaginacion();
+    }else if (ev.target.matches('#previousPage')) {
+       //evento que clicke a una de las imágenes por categoría.
+
+        if(page>1){
+            page--;
+            pintarPaginacion();
+        }
+        
+
+    }else if (ev.target.matches('#btnFav')) {
+       //evento que clicke a una de las imágenes por categoría.
+        alert("Se ha añadido tu foto a favoritos!")
     }
 })
 
@@ -87,10 +108,11 @@ document.addEventListener('click', (ev) =>{
  */
 const llamadaAPI=async(endpoint,perPage,size)=>{
     
-    const query=`search?query=${endpoint}&per_page=${perPage}&size=${size}l`
+    
+    const query=`search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}l`
     try {
         const resp=await fetch(`${urlBase}/${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
-
+        //console.log(query)
         if (resp.ok) {
             const data= await resp.json();
             //console.log(data)
@@ -103,10 +125,6 @@ const llamadaAPI=async(endpoint,perPage,size)=>{
     }
 
 }
-
-console.log(llamadaAPI("technology",1,"small"))
-console.log(llamadaAPI("nature",1,"small"))
-console.log(llamadaAPI("people",1,"small"))
 
 
 const validarBusqueda = (parametroDeBusqueda) => {
@@ -122,8 +140,8 @@ const validarBusqueda = (parametroDeBusqueda) => {
 
 const pintarImagenes =async ()  => {
     
+    const categorias=["Naturaleza","Tecnologia","Personas"]
     const categoriasCaja = document.querySelector("#categorias")
-
     const fragmento=document.createDocumentFragment();
 
     try {
@@ -133,7 +151,7 @@ const pintarImagenes =async ()  => {
             
             //por cada categoria se llama a la API
             const resp= await llamadaAPI(categorias[index],1,"small");
-        
+            console.log(resp)
             resp.photos.forEach(element => {
 
                 const article=document.createElement("ARTICLE")
@@ -147,7 +165,6 @@ const pintarImagenes =async ()  => {
                 h3.textContent=categorias[index]
                 h3.id=categorias[index]
                 h3.className ="categoria"
-                //p.textContent=element.photographer
 
                 article.append(div);
                 div.append(img);
@@ -169,46 +186,77 @@ const pintarImagenes =async ()  => {
 
 pintarImagenes();
 
-const pintarPaginacion =async (categoria)  => {
+const pintarPaginacion =async ()  => {
     
     const resultados = document.querySelector("#resultados")
+    
     resultados.innerHTML="";
+
+    const mensajeResultados = document.querySelector("#mensajeResultados")
+
     const fragmento=document.createDocumentFragment();
+
     try {
+
+        mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
+        const resp= await llamadaAPI(categoriaSeleccionada,9,"small");
 
         //Recorre el numero de catergoria
         for (let index = 0; index < 1; index++) {
             
-            //por cada categoria se llama a la API
-            const resp= await llamadaAPI(categoria,9,"small");
-            
-            console.log(resp)
+
+            page=resp.page;
+            console.log(page)
+            //console.log(resp)
+
             resp.photos.forEach(element => {
 
                 const article=document.createElement("ARTICLE")
                 const div=document.createElement("DIV")
                 const img=document.createElement("IMG");
                 const h3=document.createElement("H3");
-                const p=document.createElement("A");
+                const p=document.createElement("P");
+                const btnFav=document.createElement("BUTTON")
 
                 img.src=element.src.original
                 img.alt=element.alt
                 h3.textContent=element.alt
                 h3.id=element.alt
                 h3.className ="categoria"
-                p.text=element.photographer
-                //p.textContent=element.photographer
+                p.textContent="By "+element.photographer
+
+                btnFav.textContent="❤️ Añadir a Favoritos"  //"\u2665"
+                btnFav.id="btnFav"
 
                 article.append(div);
                 div.append(img);
                 div.append(h3);
                 div.append(p);
+                div.append(btnFav)
 
                 fragmento.append(article)
                 resultados.append(fragmento)
 
             });
         }
+
+        const botones=document.createElement("DIV")
+        const nextPage=document.createElement("BUTTON")
+        const previousPage=document.createElement("BUTTON")
+        const currentPage=document.createElement("BUTTON")
+
+        nextPage.textContent="SIGUIENTE";
+        previousPage.textContent="ATRAS";
+        currentPage.textContent=resp.page
+
+        nextPage.id="nextPage"
+        previousPage.id="previousPage"
+        currentPage.id="currentPage"
+        botones.id="paginacion"
+
+        botones.append(previousPage,currentPage,nextPage);
+        fragmento.append(botones)
+        resultados.append(fragmento)
         
     } catch (error) {
         throw error
