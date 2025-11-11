@@ -10,7 +10,7 @@ const urlBase="https://api.pexels.com/v1"
 //VARIABLES PARA PINTAR
 const fragmento=document.createDocumentFragment();
 
-//VARIABLES PARA CAPTURAR ELEMENTOS DEL DOM PARA PODER PINTAR
+//VARIABLES PARA CAPTURAR ELEMENTOS DEL DOM PARA PODER PINTAR EN ELLOS
 const resultados = document.querySelector("#resultados")
 const cabeceraResultados = document.querySelector("#cajaResultados")
 
@@ -171,11 +171,19 @@ const limpiarBotonesPaginacion=()=>{
  */
 const llamadaAPI=async(endpoint,perPage,size,orientacion)=>{
     
+    let query;
+    console.log(endpoint)
+    console.log(typeof endpoint!="number")
+    if(isNaN(endpoint)){
+        query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
+    }else{
+        query=`${urlBase}/photos/${endpoint}`
+        console.log(query)
+    }
     
-    const query=`search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
-    //console.log(query)
+    console.log(query)
     try {
-        const resp=await fetch(`${urlBase}/${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
+        const resp=await fetch(`${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
         //console.log(query)
         if (resp.ok) {
             const data= await resp.json();
@@ -229,19 +237,17 @@ const pintarImagenes =async ()  => {
                 const article=document.createElement("ARTICLE")
                 const div=document.createElement("DIV")
                 const img=document.createElement("IMG");
-                const h3=document.createElement("H3");
-                const p=document.createElement("A");
+                const button=document.createElement("BUTTON");
 
                 img.src=element.src.original
                 img.alt=element.alt
-                h3.textContent=categorias[index]
-                h3.id=categorias[index]
-                h3.className ="categoria"
+                button.textContent=categorias[index]
+                button.id=categorias[index]
+                button.className ="categoria"
 
                 article.append(div);
                 div.append(img);
-                div.append(h3);
-                div.append(p);
+                div.append(button);
 
                 fragmento.append(article)
                 categoriasCaja.append(fragmento)
@@ -309,17 +315,18 @@ const pintarPaginacion =async ()  => {
                 const article=document.createElement("ARTICLE")
                 const div=document.createElement("DIV")
                 const img=document.createElement("IMG");
-                const h3=document.createElement("H3");
-                const p=document.createElement("P");
+                //const h3=document.createElement("H3");
+                const p1=document.createElement("P");
+                const p2=document.createElement("P");
                 const btnFav=document.createElement("BUTTON")
 
                 img.src=element.src.original
                 img.alt=element.alt
                 img.id=element.id
-                h3.textContent=element.alt
-                h3.id=element.alt
+                p1.textContent=element.alt
+                p1.id=element.alt
                 // h3.className ="categoria"
-                p.textContent="By "+element.photographer
+                p2.textContent="By "+element.photographer
 
                 btnFav.textContent="❤️ Añadir a Favoritos"  //"\u2665"
                 btnFav.className="btnFav"
@@ -327,8 +334,8 @@ const pintarPaginacion =async ()  => {
 
                 article.append(div);
                 div.append(img);
-                div.append(h3);
-                div.append(p);
+                div.append(p1);
+                div.append(p2);
                 div.append(btnFav)
 
                 fragmento.append(article)
@@ -366,7 +373,7 @@ const pintarPaginacion =async ()  => {
 
 //-------------------------FAVORITOS--------------------------//
 
-const llamadaApiFavoritos = async (idImagen) => {
+/*const llamadaApiFavoritos = async (idImagen) => {
     try {
         const resp = await fetch (`${urlBase}/photos/${idImagen}`,{method:'GET',headers:{'Authorization': apiKey1},})
         if (resp.ok) {
@@ -378,7 +385,7 @@ const llamadaApiFavoritos = async (idImagen) => {
     } catch (error) {
         throw error
     }
-}
+}*/
 
 
 /**
@@ -412,8 +419,8 @@ const anadirLocalFavoritos = async (idImagen) => {
     // const fotosFavoritos = document.createDocumentFragment()
     
     try {
-        const resp = await llamadaApiFavoritos(idImagen)
-        // console.log({resp})
+        const resp = await llamadaAPI(idImagen)
+         console.log({resp})
 
         const arrayLocal = obtenerLocal('favoritos')
         // const arrayLocal = []

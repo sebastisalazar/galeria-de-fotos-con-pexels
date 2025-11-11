@@ -26,6 +26,10 @@ h1,h2{
     flex-direction: column;
     display: flex;
 }
+h1>a{
+    text-decoration: none;
+    color:white
+}
 
 header>nav{
     justify-content: center;
@@ -64,12 +68,14 @@ header>nav{
     text-align: center;
 }
 
-#btnFav{
-    font-size: 1.5rem;
+.btnFav, .categoria{
+    font-size: 0.8rem;
+    padding: 20px 10px;
 }
 
 #resultados > article>div{
     height: 70%;
+    margin-bottom: 7rem;
 }
 
 #cajaResultados{
@@ -131,7 +137,6 @@ header>nav>ul>li>a{
     background-color: darkgrey;
     padding: 5px;
     align-items: center;
-    /* margin: 5px */
 }
 
 #selectorOrientacion {
@@ -230,6 +235,7 @@ header>nav>ul>li>a{
     }
 
     .flexContainer>* {
+        
         width: 33.3%;
         /* width: calc(33.3% - 5px); */
     }
