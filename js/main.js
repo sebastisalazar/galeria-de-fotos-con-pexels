@@ -28,7 +28,10 @@ let page=1;
 let size="small";
 let perPage=1;
 //INICIALIZACION PARA el parametro ORIENTATION de LA API
-let orientacion=""
+let orientacion="landscape"
+
+let totalResultados=0;
+let totalPaginas=0;
 
 //VARIABLE QUE CAPTURA EL BOTON (necesario para el evento)
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
@@ -59,8 +62,13 @@ document.addEventListener('click', (ev) =>{
         //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID NEXTPAGE
     }else if (ev.target.matches('#nextPage')) {
 
-        page++; //suma 1 a la paginacion que se muestra en el momento
-        pintarPaginacion(); //PINTA
+        if(page%5==0){
+            page+=1;
+            pintarPaginacion2();
+        }
+        pintarPaginacion();
+        //page++; //suma 1 a la paginacion que se muestra en el momento
+        //pintarPaginacion(); //PINTA
 
         //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID PREVIOUSPAGE
     }else if (ev.target.matches('#previousPage')) {
@@ -75,9 +83,21 @@ document.addEventListener('click', (ev) =>{
 
        //evento añada una de las imágenes a favoritos
         anadirLocalFavoritos(ev.target.id)
-    } 
-    else if (ev.target.matches('.btnQFav')) {
+
+    }else if (ev.target.matches('.btnQFav')) {
+
         quitarDeFavoritos(ev.target.id)
+
+    }else if (ev.target.matches('.goToPage')) {
+        
+        const goTopage=ev.target.textContent
+
+        if(goTopage!=page){
+            page=ev.target.textContent
+            pintarPaginacion();
+        }
+
+        
     } 
     else if (ev.target.matches('#pintarFavoritos')) {
         pintarFavoritos()
@@ -92,7 +112,7 @@ document.addEventListener("change",(ev)=>{
     if(ev.target.matches('#filtro')){
         //console.log("Se ha cambiado el valor del select")
         orientacion=ev.target.value; //Setea la categoria(parametro de search API)
-        //console.log(orientacion)
+        console.log(orientacion)
         pintarPaginacion(); //PINTA
     }
 
@@ -142,7 +162,12 @@ const limpiarBotonesPaginacion=()=>{
         }
 }
 
-
+const limpiarBotonesPaginacion2=()=>{
+    const div=document.querySelector("#paginacion2")
+        if(div!==null){
+            div.remove()
+        }
+}
 
 
 /*-------------------------------------------------------
@@ -171,10 +196,11 @@ const llamadaAPI=async(endpoint)=>{
     // Si el endpoint es numérico, busca en la Api según el Id de foto
     }else{
         query=`${urlBase}/photos/${endpoint}`
-        //console.log(query)
+        //console.log
+        // (query)
     }
     
-    //console.log(query)
+    console.log(query)
     try {
         const resp=await fetch(`${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
         //console.log(query)
@@ -306,6 +332,7 @@ const pintarPaginacion =async ()  => {
 
     try {
 
+        
         perPage=12;
         mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
         const resp= await llamadaAPI(categoriaSeleccionada);
@@ -349,24 +376,26 @@ const pintarPaginacion =async ()  => {
             });
         }
 
-        const botones=document.createElement("DIV")
-        const nextPage=document.createElement("BUTTON")
-        const previousPage=document.createElement("BUTTON")
-        const currentPage=document.createElement("BUTTON")
+        // const botones=document.createElement("DIV")
+        // const nextPage=document.createElement("BUTTON")
+        // const previousPage=document.createElement("BUTTON")
+        // const currentPage=document.createElement("BUTTON")
 
-        nextPage.textContent="SIGUIENTE";
-        previousPage.textContent="ATRAS";
-        currentPage.textContent=resp.page
+        // nextPage.textContent="SIGUIENTE";
+        // previousPage.textContent="ATRAS";
+        // currentPage.textContent=resp.page
 
-        nextPage.id="nextPage"
-        previousPage.id="previousPage"
-        currentPage.id="currentPage"
-        botones.id="paginacion"
+        // nextPage.id="nextPage"
+        // previousPage.id="previousPage"
+        // currentPage.id="currentPage"
+        // botones.id="paginacion"
 
         
-        botones.append(previousPage,currentPage,nextPage);
-        fragmento.append(botones)
-        cabeceraResultados.append(fragmento)
+        // botones.append(previousPage,currentPage,nextPage);
+        // fragmento.append(botones)
+        // cabeceraResultados.append(fragmento)
+
+        pintarPaginacion2()
         
     } catch (error) {
         throw error
@@ -374,7 +403,61 @@ const pintarPaginacion =async ()  => {
  
 }
 
+const pintarPaginacion2=async () =>{
 
+    limpiarBotonesPaginacion2();
+    //limpiarfiltro();
+    let query=`${urlBase}/search?query=${categoriaSeleccionada}`
+    const resp= await llamadaAPI(query);
+
+    //console.log(resp)
+
+    totalResultados=resp.total_results
+
+    totalPaginas=totalResultados/perPage
+
+    //console.log(totalPaginas)
+
+    const botones=document.createElement("DIV")
+    const nextPage=document.createElement("BUTTON")
+    const previousPage=document.createElement("BUTTON")
+
+    const numeroDePaginas=5
+    //const Page=document.createElement("BUTTON")
+    
+    botones.append(previousPage)
+
+    for (let index = page; index < page+numeroDePaginas; index++) {
+        const pages=document.createElement("BUTTON")
+        pages.textContent=index
+
+        //console.log(index==page)
+        if(index==page){
+            pages.className="currentPage"
+        }
+        pages.className="goToPage"
+        botones.append(pages)
+    }
+
+        nextPage.textContent="SIGUIENTE";
+        previousPage.textContent="ATRAS";
+
+        nextPage.id="nextPage"
+        previousPage.id="previousPage"
+        //currentPage.id="currentPage"
+        botones.id="paginacion2"
+
+        
+        //botones.append(previousPage,currentPage,nextPage);
+        botones.append(nextPage)
+        fragmento.append(botones)
+        cabeceraResultados.append(fragmento)
+        
+    /*} catch (error) {
+        throw error
+    }*/
+ 
+}
 
 //-------------------------FAVORITOS--------------------------//
 
