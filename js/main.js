@@ -110,8 +110,7 @@ miBusqueda.addEventListener("submit",(ev) =>{
         //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
         if(validarBusqueda(aBuscar)==true){
             setearCategoria(aBuscar)
-            pintarPaginacion();
-            
+            pintarPaginacion();  
         }
 })
 
