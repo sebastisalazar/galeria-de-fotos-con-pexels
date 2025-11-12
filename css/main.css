@@ -66,6 +66,11 @@ header>nav{
     color:white;
 }
 
+.goToPage{
+    margin:5px;
+    padding:5px;
+}
+
 #filtro{
     padding: 10px 0;
     color:black;
