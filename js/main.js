@@ -37,6 +37,9 @@ const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
 const imagenesPorCategoria = document.querySelector('.categoria')
 // const favoritos = document.createDocumentFragment()
 
+//CAJA DONDE SE PINTARÁN LAS IMÁGENES FAVORITAS
+const favoritos = document.querySelector("#imagenesFavoritos")
+
 
 
 /*-------------------------------------------------------
@@ -110,6 +113,16 @@ document.addEventListener("change",(ev)=>{
 
 })
 
+
+
+
+
+/*-------------------------------------------------------
+------------------FUNCIONES------------------------------
+---------------------------------------------------------*/
+
+
+
 /**
  * Funcion que setea un nuevo valor a categoria(parametro de search API)
  * @param {String} nuevoValor de busqueda
@@ -139,9 +152,6 @@ const limpiarBotonesPaginacion=()=>{
 }
 
 
-/*-------------------------------------------------------
-------------------FUNCIONES------------------------------
----------------------------------------------------------*/
 /**
  * Funcion llamada API PEXELS
  * @param {String} endpoint es el valor a buscar
@@ -149,6 +159,7 @@ const limpiarBotonesPaginacion=()=>{
  * @param {String} size es el tamaño para las fotos. Valores pueden ser "large"(24MP), "medium"(12MP) or "small"(4MP).
  * @param {String} orientacion es el parametro que indica el estilo de foto. Puede ser "landscape", "portrait" o "todas"
  * @returns Una promesa con el objeto conteniendo el resultado de la query(conjunto de todos los parametros)
+ * @throws {Error|String} Devuelve un string informando del error
  */
 const llamadaAPI=async(endpoint)=>{
     
@@ -176,9 +187,18 @@ const llamadaAPI=async(endpoint)=>{
     } catch (error) {
         throw error
     }
-
 }
 
+
+
+/**
+ * Función para validar los carácteres del imput de una búsqueda. 
+ * @param {string} parametroDeBusqueda texto introducido en la búsqueda
+ * @returns {boolean} Devuelve 'true' si los carácteres del texto sólo son de a-z o de A-Z
+ * @example
+ * validarBusqueda('hola'); // True
+ * validarBusqueda('4508'); // False
+ */
 const validarBusqueda = (parametroDeBusqueda) => {
     const regex=/^[a-zA-Z]+$/u
 
@@ -189,12 +209,17 @@ const validarBusqueda = (parametroDeBusqueda) => {
         
         return false
     }
-
 }
 
 
+
+
+/**
+ * Función que pinta en el Dom tres imágenes sacadas de la Api agrupadas por categorías
+ * @returns {undefined} 
+ * @throws {Error} Devuelve un error si detecta algún fallo en la llamada o en la ejecución
+ */
 const pintarImagenes =async ()  => {
-    
 
     try {
 
@@ -205,8 +230,6 @@ const pintarImagenes =async ()  => {
             //por cada categoria se llama a la API
 
             const resp= await llamadaAPI(categorias[index]);
-            //console.log(resp)
-
 
             resp.photos.forEach(element => {
 
@@ -234,9 +257,15 @@ const pintarImagenes =async ()  => {
     } catch (error) {
         throw error
     }
- 
 }
 
+
+/**
+ * Función que pinta dinámicamente en el DOM una galería de imágenes sacadas de la API 
+ * paginadas en función de una selección de categoría, un parámetro de búsqueda o una selección de orientación
+ * @returns {undefined}
+ * @throws {error} Devuelve un error si detecta algún fallo en la llamada o en la ejecución
+ */
 const pintarPaginacion =async ()  => {
     limpiarBotonesPaginacion();
     limpiarfiltro();
@@ -260,7 +289,6 @@ const pintarPaginacion =async ()  => {
         vertical.selected="selected"
     }
     
-
     filtroOrientacion.append(horizontal);
     filtroOrientacion.append(vertical);
 
@@ -276,12 +304,7 @@ const pintarPaginacion =async ()  => {
         //Recorre el numero de catergoria
         for (let index = 0; index < 1; index++) {
             
-
             page=resp.page;
-
-            //console.log(page)
-            //console.log(resp)
-
 
             resp.photos.forEach(element => {
                 // console.log(element)
@@ -343,60 +366,59 @@ const pintarPaginacion =async ()  => {
  
 }
 
+
+
 //-------------------------FAVORITOS--------------------------//
 
-/*const llamadaApiFavoritos = async (idImagen) => {
-    try {
-        const resp = await fetch (`${urlBase}/photos/${idImagen}`,{method:'GET',headers:{'Authorization': apiKey1},})
-        if (resp.ok) {
-            const data = await resp.json()
-            return data
-        } else {
-            throw 'Ha habido un error al guardar la foto'
-        }
-    } catch (error) {
-        throw error
-    }
-}*/
+
 
 
 /**
- * Obtener el array del LocalStorage
- * @param {String} identificador 
- * @returns {Array}
+ * Obtener el array del LocalStorage dandole como parámetro un identificador 
+ * @param {String} identificador Nombre que le queremos dar al almacenamiento en el localStorage
+ * @param {array} arrayLocal El array guardado en el local storage o en su defecto el array vacío
+ * @returns {Array} Nos devuelve el array del local storage o en su defecto el array vacío 
  */
 const obtenerLocal = (identificador) => {
-    // console.log({identificador})
+
      const arrayLocal=JSON.parse(localStorage.getItem(identificador)) || []
-     //console.log(arrayLocal, ' en obtenerLocal')
-    //  return arrayLocal
-    return JSON.parse(localStorage.getItem(identificador)) || []
-    // return []
+     
+     return arrayLocal
+    
 }
 
 
+
 /**
- * Setear el array del LocalStorage
- * @param {String} identificador 
- * @param {Array} array
+ * Setear el array del LocalStorage con el array que le introducimos como parámetro
+ * @param {Array} array Array nuevo que queremos que se sobrescribe en el localStorage
+ * @returns guarda el nuevo array en el localStorage
  */
 const setearLocal = (array) =>{
     return localStorage.setItem('favoritos', JSON.stringify(array));
 }
 
+
+
+/**
+ * Función que guarda las imágenes sacadas de la base de datos de la API en el almacenamiento local
+ * @param {number|string} idImagen id de la imagen que queremos guardar en favoritos, detectada al pulsar el botón
+ * @param {object} resp objeto obtenido de resolver la promesa de la llamada a la Api
+ * @param {array} arrayLocal array de fotos favoritas sacado el local Storage
+ * @param {object} newObject objeto creado para que nos pinte cada una de las imágenes y sus datos
+ * @param {number} existe determina si dentro de nuestro array existe un objeto cuyo id sea idImagen
+ * @returns {undefined}
+ * @throws {error}
+ * @example
+ * añadirLocalFavoritos(859647) // añade a favoritos la imagen con id 859674
+ */
 const anadirLocalFavoritos = async (idImagen) => {
-    //console.log(idImagen)
-    // const seccionFavoritos = document.querySelector('#imagenesFavoritos')
-    // seccionFavoritos.innerHTML = ''
-    // const fotosFavoritos = document.createDocumentFragment()
     
     try {
         const resp = await llamadaAPI(idImagen)
-         //console.log({resp})
+        //  console.log({resp})
 
         const arrayLocal = obtenerLocal('favoritos')
-        // const arrayLocal = []
-        //console.log(arrayLocal)
 
         const newObject={
                 id: resp.id,
@@ -408,9 +430,7 @@ const anadirLocalFavoritos = async (idImagen) => {
         const existe= arrayLocal.find((obj)=>obj.id==idImagen)
 
         if(!existe) {
-            // console.log('no existe este elemento')
-
-            
+            // console.log('no existe este elemento') 
             setearLocal( [...arrayLocal, newObject])
         }
     } catch (error){
@@ -420,14 +440,15 @@ const anadirLocalFavoritos = async (idImagen) => {
 
 
 
+
+/**
+ * Función que pinta en el DOM todas las imágnes guardadas en favoritos por el usuario
+ * @param {array} arrayLocal array que contiene las imágenes guardades en favoritos en el local Storage
+ * @returns {undefined}
+ */
 const pintarFavoritos = ()  => {
     
-    const favoritos = document.querySelector("#imagenesFavoritos")
-   
-    
     favoritos.innerHTML="";
-
-    const fragmento=document.createDocumentFragment();
 
         const arrayLocal = obtenerLocal('favoritos')
 
@@ -442,8 +463,6 @@ const pintarFavoritos = ()  => {
                 const h3=document.createElement("H3");
                 const p=document.createElement("P");
                 const btnQuitarFav=document.createElement("BUTTON")
-
-                
 
                 img.src=element.src
                 img.alt=element.alt
@@ -464,36 +483,39 @@ const pintarFavoritos = ()  => {
                 div2.append(p);
                 div2.append(btnQuitarFav)
 
-                
-
             });
         fragmento.append(div)
-        favoritos.append(fragmento)
-         
-        
-    // }
+        favoritos.append(fragmento)         
 }
 
+
+/**
+ * Función que elimina una imagen de favoritos, lo borra del local Storage y vuelve a pintar el nuevo resultado en el DOM
+ * @param {number} idImagen 
+ * @param {array} arrayLocal array que contiene las imágenes guardades en favoritos en el local Storage
+ * @param {array} nuevoarrayLocal array que borra del array local las fotos eliminadas de favoritos
+ * @returns {undefined} 
+ */
 const quitarDeFavoritos = (idImagen) => {
-    // console.log(idImagen)
+    
     const arrayLocal = obtenerLocal('favoritos')
-    // console.log(arrayLocal)
-    // const indiceFoto = arrayLocal.findIndex(element => element.id == idImagen)
-    // console.log(indiceFoto)
-    // const tercerArray = arrayLocal.map(elemento => elemento.id)
-    // console.log(tercerArray)
+
     const nuevoarrayLocal = arrayLocal.filter((element) => element.id != idImagen)
-    // console.log(nuevoarrayLocal)
+    
     setearLocal(nuevoarrayLocal)
     pintarFavoritos()     
 
 }
 
+
+/**
+ * Función que invoca a la función pintarImagenes() en la página de inico y a pintarFavoritos() en la página de Inicio
+ * @returns {undefined}
+ */
 const init=()=>{
 
     if(location.pathname.includes('index')) pintarImagenes();
     if(location.pathname.includes('favoritos')) pintarFavoritos()
-
 
 }        
 
