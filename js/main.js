@@ -325,6 +325,7 @@ const pintarPaginacion =async ()  => {
                 // h3.className ="categoria"
                 p2.textContent="By "+element.photographer
 
+                p1.className = 'tituloFoto'
                 btnFav.textContent="❤️ Añadir a Favoritos"  //"\u2665"
                 btnFav.className="btnFav"
                 btnFav.id = element.id
