@@ -127,18 +127,18 @@ header>nav, header>nav>ul{
 }
 
 
-header>nav>ul>li:first-child{
+header>nav>ul>form:first-child{
     
     /* background-color: aqua;  */
     width: 70%;
 }
 
-header>nav>ul>li:nth-child(2){
+header>nav>ul>form:nth-child(2){
     /* background-color: aqua; */
     width: 30%;
 }
 
-header>nav>ul>li>a{
+header>nav>ul>form>a{
     text-decoration: none;
     color:white
 }

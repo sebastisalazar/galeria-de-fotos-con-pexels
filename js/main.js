@@ -28,7 +28,7 @@ let page=1;
 let size="small";
 let perPage=1;
 //INICIALIZACION PARA el parametro ORIENTATION de LA API
-let orientacion="landscape"
+let orientacion=""
 
 //VARIABLE QUE CAPTURA EL BOTON (necesario para el evento)
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
@@ -49,21 +49,7 @@ const favoritos = document.querySelector("#imagenesFavoritos")
 // TODO EVENTO CLICK
 document.addEventListener('click', (ev) =>{
     
-    //EVENTO CLICK en el boton BUSCAR
-    if(ev.target.matches('.btnBuscar')) {
-        
-        //CAPTURA EL VALOR INTRODUCIDO EN EL CAMPO TEXTO A BUSCAR
-        const aBuscar=document.querySelector("#buscar").value;
-
-        //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
-        if(validarBusqueda(aBuscar)==true){
-            setearCategoria(aBuscar)
-            pintarPaginacion();
-            
-        }
-        
-        //SI SE HA HECHO CLICK SOBRE un LINK CON CATEGORIA 
-    } else if (ev.target.matches('.categoria')) {
+        if (ev.target.matches('.categoria')) {
        
         //console.log("haz hecho click en una categoria!")
         setearCategoria(ev.target.id) //Setea la categoria(parametro de search API) cogiendola del ID del LINK
@@ -87,16 +73,15 @@ document.addEventListener('click', (ev) =>{
         //SI SE HA HECHO CLICK SOBRE UN BOTON DE AÑADIR A FAVORITOS
     }else if (ev.target.matches('.btnFav')) {
 
-       //evento que clicke a una de las imágenes por categoría.
-        console.log("Se ha añadido tu foto a favoritos!")
+       //evento añada una de las imágenes a favoritos
         anadirLocalFavoritos(ev.target.id)
     } 
     else if (ev.target.matches('.btnQFav')) {
         quitarDeFavoritos(ev.target.id)
     } 
-    // else if (ev.target.matches('#pintarFavoritos')) {
-    //     pintarFavoritos()
-    // }
+    else if (ev.target.matches('#pintarFavoritos')) {
+        pintarFavoritos()
+    }
 })
 
 //EVENTO CHANGE PARA ESCUCHAR EL BOTON SELECT
@@ -114,14 +99,21 @@ document.addEventListener("change",(ev)=>{
 })
 
 
+//EVENTO SUBMIT PARA EL RESULTADO DE LA BÚSQUEDA
+const miBusqueda = document.querySelector("#submit")
+miBusqueda.addEventListener("submit",(ev) =>{
+    ev.preventDefault();//evitar eventos predefinidos
+        
+        //CAPTURA EL VALOR INTRODUCIDO EN EL CAMPO TEXTO A BUSCAR
+        const aBuscar=document.querySelector("#buscar").value;
 
-
-
-/*-------------------------------------------------------
-------------------FUNCIONES------------------------------
----------------------------------------------------------*/
-
-
+        //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
+        if(validarBusqueda(aBuscar)==true){
+            setearCategoria(aBuscar)
+            pintarPaginacion();
+            
+        }
+})
 
 /**
  * Funcion que setea un nuevo valor a categoria(parametro de search API)
@@ -152,6 +144,14 @@ const limpiarBotonesPaginacion=()=>{
 }
 
 
+
+
+/*-------------------------------------------------------
+------------------FUNCIONES------------------------------
+---------------------------------------------------------*/
+
+
+
 /**
  * Funcion llamada API PEXELS
  * @param {String} endpoint es el valor a buscar
@@ -165,9 +165,11 @@ const llamadaAPI=async(endpoint)=>{
     
     let query;
 
-    //Si el 
+    //Si el endpoint no es numérico, ejecucta la query de search
     if(isNaN(endpoint)){
-        query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
+        query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&locale=es-ES`
+        if (orientacion) {query += `&orientation=${orientacion}`}
+    // Si el endpoint es numérico, busca en la Api según el Id de foto
     }else{
         query=`${urlBase}/photos/${endpoint}`
         //console.log(query)
@@ -200,12 +202,12 @@ const llamadaAPI=async(endpoint)=>{
  * validarBusqueda('4508'); // False
  */
 const validarBusqueda = (parametroDeBusqueda) => {
-    const regex=/^[a-zA-Z]+$/u
+    const regex=/^[0-9a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s-]+$/u
 
     if(regex.test(parametroDeBusqueda)){
         return true
     }else{
-        console.log("El campo busqueda no admite valores numericos")
+        alert("El campo busqueda sólo admite letras, números, espacios y guiones")
         
         return false
     }
@@ -276,38 +278,45 @@ const pintarPaginacion =async ()  => {
 
     const horizontal=document.createElement("OPTION");
     const vertical=document.createElement("OPTION");
+    const horizontalYVertical=document.createElement('OPTION')
 
     horizontal.textContent="Horizontal";
     horizontal.value="landscape";
 
+    horizontalYVertical.textContent='Ambas'
+    horizontalYVertical.value=''
+
     vertical.value="portrait"
     vertical.textContent="Vertical"
 
-    if(horizontal.value==orientacion){
+    if(horizontal.value=="landscape"){
         horizontal.selected="selected"
-    }else{
+    }else if (vertical.value == 'portrait') {
         vertical.selected="selected"
+    } else {
+        horizontalYVertical='selected'
     }
     
+
     filtroOrientacion.append(horizontal);
     filtroOrientacion.append(vertical);
+    filtroOrientacion.append(horizontalYVertical)
 
     cabeceraResultados.prepend(filtroOrientacion)
     const mensajeResultados = document.querySelector("#mensajeResultados")
 
     try {
 
-        perPage=9;
+        perPage=12;
         mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
         const resp= await llamadaAPI(categoriaSeleccionada);
 
-        //Recorre el numero de catergoria
         for (let index = 0; index < 1; index++) {
             
+
             page=resp.page;
 
             resp.photos.forEach(element => {
-                // console.log(element)
 
                 const article=document.createElement("ARTICLE")
                 const div=document.createElement("DIV")
@@ -325,7 +334,6 @@ const pintarPaginacion =async ()  => {
                 // h3.className ="categoria"
                 p2.textContent="By "+element.photographer
 
-                p1.className = 'tituloFoto'
                 btnFav.textContent="❤️ Añadir a Favoritos"  //"\u2665"
                 btnFav.className="btnFav"
                 btnFav.id = element.id
