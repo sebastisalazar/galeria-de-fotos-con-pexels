@@ -24,6 +24,9 @@ const categoriasCaja = document.querySelector("#categorias")
 let categoriaSeleccionada="";
 //INICIALIZACION PARA el parametro PAGE de LA API
 let page=1;
+//INICIALIZACION PARA el parametro SIZE de LA API
+let size="small";
+let perPage=1;
 //INICIALIZACION PARA el parametro ORIENTATION de LA API
 let orientacion="landscape"
 
@@ -116,7 +119,7 @@ const setearCategoria=(nuevoValor)=>{
 }
 
 /**
- * 
+ * Setea el valor del filtro(variable global)
  */
 const limpiarfiltro=()=>{
     const select=document.querySelector("section>select")
@@ -125,6 +128,9 @@ const limpiarfiltro=()=>{
         }
 }
 
+/**
+ * Limpia los botones de paginacion situados al final de la galeria
+ */
 const limpiarBotonesPaginacion=()=>{
     const div=document.querySelector("#paginacion")
         if(div!==null){
@@ -132,46 +138,23 @@ const limpiarBotonesPaginacion=()=>{
         }
 }
 
-// /
-// //  para ello hay que darle una clase a esas imágenes y cada una tendrá un id con su categoría
-// // (ev.target.matches(.claseImágenes)) y que recoja como parámentro su idCategoria
-// //  pintarImágenes(idCategoria) 
-// document.addEventListener('click', (ev) =>{
-//     if) {
-        
-//     }
-// })
-
-
-// //evento que muestre las imágenes favoritas
-// document.addEventListener('click', (ev) =>{
-//     if(ev.target.matches('#botonFavoritas')) {
-//         pintarImágenes(favoritas, orientaciónpordefecto) //ver bien dónde sacarlas
-//     }
-// })
-
-// //Evento que esté a la escucha de que se clicke el botón guardar favoritos
-// // llamar a guardarFavoritos(idImagen)
-// document.addEventListener('click', (ev) =>{
-//     if(ev.target.matches('.botonFavoritos')) {
-//         guardarFavoritos(idImagen)
-//     }
-// })
-
-
 
 /*-------------------------------------------------------
 ------------------FUNCIONES------------------------------
 ---------------------------------------------------------*/
 /**
- * Funcion llamada API
- * @param {String} endpoint es el valor de la query a buscar
- * @returns Una promesa con el objeto conteniendo todas las fotos
+ * Funcion llamada API PEXELS
+ * @param {String} endpoint es el valor a buscar
+ * @param {Number} perPage es el numero de resultados por pagina. Siendo minimo 1
+ * @param {String} size es el tamaño para las fotos. Valores pueden ser "large"(24MP), "medium"(12MP) or "small"(4MP).
+ * @param {String} orientacion es el parametro que indica el estilo de foto. Puede ser "landscape", "portrait" o "todas"
+ * @returns Una promesa con el objeto conteniendo el resultado de la query(conjunto de todos los parametros)
  */
-const llamadaAPI=async(endpoint,perPage,size,orientacion)=>{
+const llamadaAPI=async(endpoint)=>{
     
     let query;
 
+    //Si el 
     if(isNaN(endpoint)){
         query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
     }else{
@@ -210,23 +193,18 @@ const validarBusqueda = (parametroDeBusqueda) => {
 }
 
 
-// const borrarImagenes = () =>{
-//     // seleccionar el lugar del dom y eliminar la galería. Se pordía meter dentro
-//     // de un div y eliminarlo. luego al pintar, volverlo a meter
-// }
-
 const pintarImagenes =async ()  => {
-    
     
 
     try {
 
+        perPage=1;
         //Recorre el numero de catergoria
         for (let index = 0; index < categorias.length; index++) {
             
             //por cada categoria se llama a la API
 
-            const resp= await llamadaAPI(categorias[index],1,"small",orientacion);
+            const resp= await llamadaAPI(categorias[index]);
             //console.log(resp)
 
 
@@ -258,9 +236,6 @@ const pintarImagenes =async ()  => {
     }
  
 }
-
-
-
 
 const pintarPaginacion =async ()  => {
     limpiarBotonesPaginacion();
@@ -294,8 +269,9 @@ const pintarPaginacion =async ()  => {
 
     try {
 
+        perPage=9;
         mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
-        const resp= await llamadaAPI(categoriaSeleccionada,9,"small",orientacion);
+        const resp= await llamadaAPI(categoriaSeleccionada);
 
         //Recorre el numero de catergoria
         for (let index = 0; index < 1; index++) {
@@ -366,8 +342,6 @@ const pintarPaginacion =async ()  => {
     }
  
 }
-
-
 
 //-------------------------FAVORITOS--------------------------//
 
@@ -453,26 +427,14 @@ const pintarFavoritos = ()  => {
     
     favoritos.innerHTML="";
 
-    // const mensajeFavoritos = document.querySelector("#mensajeResultados")
-
     const fragmento=document.createDocumentFragment();
 
-
-        // mensajeResultados.textContent='Imágenes favoritas'
         const arrayLocal = obtenerLocal('favoritos')
-        //console.log(arrayLocal)
 
-        //Recorre el numero de catergoria
-        // for (let index = 0; index < 1; index++) {
             const div=document.createElement("DIV")
             div.className = 'flexContainer'
 
-            // page=resp.page;
-            // console.log(page)
-            // console.log(resp)
-
             arrayLocal.forEach(element => {
-                // console.log(element)
 
                 const article=document.createElement("ARTICLE")
                 const div2=document.createElement("DIV")
@@ -507,23 +469,7 @@ const pintarFavoritos = ()  => {
             });
         fragmento.append(div)
         favoritos.append(fragmento)
-                // const botones=document.createElement("DIV")
-        // const nextPage=document.createElement("BUTTON")
-        // const previousPage=document.createElement("BUTTON")
-        // const currentPage=document.createElement("BUTTON")
-
-        // nextPage.textContent="SIGUIENTE";
-        // previousPage.textContent="ATRAS";
-        // currentPage.textContent=resp.page
-
-        // nextPage.id="nextPage"
-        // previousPage.id="previousPage"
-        // currentPage.id="currentPage"
-        // botones.id="paginacion"
-
-        // botones.append(previousPage,currentPage,nextPage);
-        // fragmento.append(botones)
-        // resultados.append(fragmento)
+         
         
     // }
 }
@@ -543,24 +489,21 @@ const quitarDeFavoritos = (idImagen) => {
 
 }
 
-        
+const init=()=>{
+
+    if(location.pathname.includes('index')) pintarImagenes();
+    if(location.pathname.includes('favoritos')) pintarFavoritos()
 
 
-// const popUpImagen = (idImagen) => {
-//     //para el final o abrir la imagen en una página y ya está
-// }
+}        
 
-// const filtrarPorOrientacion = (orientacion) => {
-//     pintarImágenes(filtroBusqueda, parametro)
-    
-// }
+
 
 /*-------------------------------------------------------
 ------------------INVOCACIONES------------------------------
 ---------------------------------------------------------*/
 
 
-pintarImagenes();
+init()
 
-pintarFavoritos()
 
