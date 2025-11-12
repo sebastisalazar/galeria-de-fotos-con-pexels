@@ -30,6 +30,9 @@ let perPage=1;
 //INICIALIZACION PARA el parametro ORIENTATION de LA API
 let orientacion="landscape"
 
+let totalResultados=0;
+let totalPaginas=0;
+
 //VARIABLE QUE CAPTURA EL BOTON (necesario para el evento)
 const buscar = document.querySelector('.btnnBuscar') //id de ejemplo
 
@@ -70,8 +73,13 @@ document.addEventListener('click', (ev) =>{
         //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID NEXTPAGE
     }else if (ev.target.matches('#nextPage')) {
 
-        page++; //suma 1 a la paginacion que se muestra en el momento
-        pintarPaginacion(); //PINTA
+        if(page%5==0){
+            page+=1;
+            pintarPaginacion2();
+        }
+        pintarPaginacion();
+        //page++; //suma 1 a la paginacion que se muestra en el momento
+        //pintarPaginacion(); //PINTA
 
         //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID PREVIOUSPAGE
     }else if (ev.target.matches('#previousPage')) {
@@ -87,9 +95,21 @@ document.addEventListener('click', (ev) =>{
        //evento que clicke a una de las imágenes por categoría.
         console.log("Se ha añadido tu foto a favoritos!")
         anadirLocalFavoritos(ev.target.id)
-    } 
-    else if (ev.target.matches('.btnQFav')) {
+
+    }else if (ev.target.matches('.btnQFav')) {
+
         quitarDeFavoritos(ev.target.id)
+
+    }else if (ev.target.matches('.goToPage')) {
+        
+        const goTopage=ev.target.textContent
+
+        if(goTopage!=page){
+            page=ev.target.textContent
+            pintarPaginacion();
+        }
+
+        
     } 
     // else if (ev.target.matches('#pintarFavoritos')) {
     //     pintarFavoritos()
@@ -138,6 +158,13 @@ const limpiarBotonesPaginacion=()=>{
         }
 }
 
+const limpiarBotonesPaginacion2=()=>{
+    const div=document.querySelector("#paginacion2")
+        if(div!==null){
+            div.remove()
+        }
+}
+
 
 /*-------------------------------------------------------
 ------------------FUNCIONES------------------------------
@@ -159,7 +186,8 @@ const llamadaAPI=async(endpoint)=>{
         query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&orientation=${orientacion}&locale=es-ES`
     }else{
         query=`${urlBase}/photos/${endpoint}`
-        //console.log(query)
+        //console.log
+        // (query)
     }
     
     //console.log(query)
@@ -192,7 +220,7 @@ const validarBusqueda = (parametroDeBusqueda) => {
 
 }
 
-
+//-------------------------CATEGORIAS + GALERIA + PAGINACION--------------------------//
 const pintarImagenes =async ()  => {
     
 
@@ -269,7 +297,7 @@ const pintarPaginacion =async ()  => {
 
     try {
 
-        perPage=9;
+        perPage=12;
         mensajeResultados.textContent="Mostrando:"+categoriaSeleccionada+"- Page "+page
         const resp= await llamadaAPI(categoriaSeleccionada);
 
@@ -318,30 +346,84 @@ const pintarPaginacion =async ()  => {
             });
         }
 
-        const botones=document.createElement("DIV")
-        const nextPage=document.createElement("BUTTON")
-        const previousPage=document.createElement("BUTTON")
-        const currentPage=document.createElement("BUTTON")
+        // const botones=document.createElement("DIV")
+        // const nextPage=document.createElement("BUTTON")
+        // const previousPage=document.createElement("BUTTON")
+        // const currentPage=document.createElement("BUTTON")
 
-        nextPage.textContent="SIGUIENTE";
-        previousPage.textContent="ATRAS";
-        currentPage.textContent=resp.page
+        // nextPage.textContent="SIGUIENTE";
+        // previousPage.textContent="ATRAS";
+        // currentPage.textContent=resp.page
 
-        nextPage.id="nextPage"
-        previousPage.id="previousPage"
-        currentPage.id="currentPage"
-        botones.id="paginacion"
+        // nextPage.id="nextPage"
+        // previousPage.id="previousPage"
+        // currentPage.id="currentPage"
+        // botones.id="paginacion"
 
         
-        botones.append(previousPage,currentPage,nextPage);
-        fragmento.append(botones)
-        cabeceraResultados.append(fragmento)
+        // botones.append(previousPage,currentPage,nextPage);
+        // fragmento.append(botones)
+        // cabeceraResultados.append(fragmento)
+
+        pintarPaginacion2()
         
     } catch (error) {
         throw error
     }
  
 }
+
+const pintarPaginacion2=async () =>{
+
+    limpiarBotonesPaginacion2();
+    limpiarfiltro();
+    const endpoint="gatos";
+    let query=`${urlBase}/search?query=${endpoint}`
+    const resp= await llamadaAPI(query);
+
+    //console.log(resp)
+
+    totalResultados=resp.total_results
+
+    totalPaginas=totalResultados/perPage
+
+    //console.log(totalPaginas)
+
+    const botones=document.createElement("DIV")
+    const nextPage=document.createElement("BUTTON")
+    const previousPage=document.createElement("BUTTON")
+
+    const numeroDePaginas=5
+    //const Page=document.createElement("BUTTON")
+    
+    botones.append(previousPage)
+
+    for (let index = page; index < page+numeroDePaginas; index++) {
+        const pages=document.createElement("BUTTON")
+        pages.textContent=index
+
+        console.log(index==page)
+        if(index==page){
+            pages.className="currentPage"
+        }
+        pages.className="goToPage"
+        botones.append(pages)
+    }
+
+        nextPage.textContent="SIGUIENTE";
+        previousPage.textContent="ATRAS";
+
+        nextPage.id="nextPage"
+        previousPage.id="previousPage"
+        //currentPage.id="currentPage"
+        botones.id="paginacion2"
+
+        
+        //botones.append(previousPage,currentPage,nextPage);
+        botones.append(nextPage)
+        fragmento.append(botones)
+        cabeceraResultados.append(fragmento)
+} 
 
 //-------------------------FAVORITOS--------------------------//
 
