@@ -138,18 +138,6 @@ if (miBusqueda!=null){
 }
         
 
-
-
-
-
-/*----------------------------------------------------------------------------------------------------------
-------------------FUNCIONES------------------------------
----------------------------------------------------------*/
-
-
-
-
-
 /**
  * Funcion que setea un nuevo valor a categoria(parametro de search API)
  * @param {String} nuevoValor de busqueda
@@ -186,7 +174,9 @@ const limpiarBotonesPaginacion2=()=>{
 }
 
 
-
+/*-------------------------------------------------------
+------------------FUNCIONES------------------------------
+---------------------------------------------------------*/
 
 
 
@@ -447,7 +437,7 @@ const pintarPaginacion2=async () =>{
 
         //console.log(index==page)
         if(index==page){
-            pages.id="currentPage"
+            pages.className="currentPage"
         }
         pages.className="goToPage"
         botones.append(pages)
