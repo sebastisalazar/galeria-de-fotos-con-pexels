@@ -62,11 +62,11 @@ document.addEventListener('click', (ev) =>{
         //SI SE HA HECHO CLICK SOBRE UN BOTON CON ID NEXTPAGE
     }else if (ev.target.matches('#nextPage')) {
 
-        if(page%5==0){
             page+=1;
-            pintarPaginacion2();
-        }
-        pintarPaginacion();
+            pintarPaginacion();
+            //pintarPaginacion2();
+        
+       
         //page++; //suma 1 a la paginacion que se muestra en el momento
         //pintarPaginacion(); //PINTA
 
@@ -112,7 +112,7 @@ document.addEventListener("change",(ev)=>{
     if(ev.target.matches('#filtro')){
         //console.log("Se ha cambiado el valor del select")
         orientacion=ev.target.value; //Setea la categoria(parametro de search API)
-        console.log(orientacion)
+        //console.log(orientacion)
         pintarPaginacion(); //PINTA
     }
 
@@ -121,18 +121,22 @@ document.addEventListener("change",(ev)=>{
 
 //EVENTO SUBMIT PARA EL RESULTADO DE LA BÚSQUEDA
 const miBusqueda = document.querySelector("#submit")
-miBusqueda.addEventListener("submit",(ev) =>{
-    ev.preventDefault();//evitar eventos predefinidos
-        
-        //CAPTURA EL VALOR INTRODUCIDO EN EL CAMPO TEXTO A BUSCAR
-        const aBuscar=document.querySelector("#buscar").value;
 
-        //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
-        if(validarBusqueda(aBuscar)==true){
-            setearCategoria(aBuscar)
-            pintarPaginacion();  
-        }
-})
+if (miBusqueda!=null){
+        miBusqueda.addEventListener("submit",(ev) =>{
+            ev.preventDefault();//evitar eventos predefinidos
+                
+                //CAPTURA EL VALOR INTRODUCIDO EN EL CAMPO TEXTO A BUSCAR
+                const aBuscar=document.querySelector("#buscar").value;
+
+                //SE VALIDA la busqueda. Si es valido setea la categoria(parametro de search API) a lo que se haya escrito y se pinta
+                if(validarBusqueda(aBuscar)==true){
+                    setearCategoria(aBuscar)
+                    pintarPaginacion();  
+                }
+        })
+}
+        
 
 /**
  * Funcion que setea un nuevo valor a categoria(parametro de search API)
@@ -192,7 +196,7 @@ const llamadaAPI=async(endpoint)=>{
     //Si el endpoint no es numérico, ejecucta la query de search
     if(isNaN(endpoint)){
         query=`${urlBase}/search?query=${endpoint}&page=${page}&per_page=${perPage}&size=${size}&locale=es-ES`
-        if (orientacion) {query += `&orientation=${orientacion}`}
+        if (orientacion!="ambas") {query += `&orientation=${orientacion}`}
     // Si el endpoint es numérico, busca en la Api según el Id de foto
     }else{
         query=`${urlBase}/photos/${endpoint}`
@@ -200,7 +204,7 @@ const llamadaAPI=async(endpoint)=>{
         // (query)
     }
     
-    console.log(query)
+    //console.log(query)
     try {
         const resp=await fetch(`${query}`,{method:'GET',headers:{'Authorization': apiKey1},})
         //console.log(query)
@@ -294,7 +298,7 @@ const pintarImagenes =async ()  => {
  * @throws {error} Devuelve un error si detecta algún fallo en la llamada o en la ejecución
  */
 const pintarPaginacion =async ()  => {
-    limpiarBotonesPaginacion();
+    //limpiarBotonesPaginacion();
     limpiarfiltro();
     resultados.innerHTML=""
 
@@ -309,17 +313,17 @@ const pintarPaginacion =async ()  => {
     horizontal.value="landscape";
 
     horizontalYVertical.textContent='Ambas'
-    horizontalYVertical.value=''
+    horizontalYVertical.value='ambas'
 
     vertical.value="portrait"
     vertical.textContent="Vertical"
 
-    if(horizontal.value=="landscape"){
+    if(horizontal.value==orientacion){
         horizontal.selected="selected"
-    }else if (vertical.value == 'portrait') {
+    }else if (vertical.value == orientacion) {
         vertical.selected="selected"
     } else {
-        horizontalYVertical='selected'
+        horizontalYVertical.selected='selected'
     }
     
 
@@ -605,7 +609,8 @@ const quitarDeFavoritos = (idImagen) => {
  */
 const init=()=>{
 
-    if(location.pathname.includes('index')) pintarImagenes();
+    if(location.pathname.includes('index'))pintarImagenes();
+    
     if(location.pathname.includes('favoritos')) pintarFavoritos()
 
 }        
