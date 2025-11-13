@@ -69,7 +69,7 @@ header>nav{
     margin: 20px 0;
 }
 
-.currentPage{
+#currentPage{
     background-color: gray;
     color:white;
 }
