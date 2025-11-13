@@ -618,5 +618,6 @@ const init=()=>{
 
 
 init()
+pintarFavoritos()
 
 

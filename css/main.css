@@ -10,7 +10,7 @@
 img{
     display: inline-block;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
 } 
 
 footer{
@@ -179,7 +179,7 @@ header>nav>ul>form>a{
 /*Para todo div que se encuentre dentro de article, (article) que se encuentre dentro una etiqueta con clase flexContainer */
 .flexContainer article div{
     width: 100%;
-    /*height: 80%;*/
+    /* height: 80%; */
     
 }
 
