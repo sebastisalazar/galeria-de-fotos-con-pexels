@@ -6,7 +6,7 @@ Desarrollado con HTML, CSS y JavaScript con una interfaz responsiva y funcional.
 
 ---
 
-## 📌 Características
+## Características
 
 - Búsqueda de imágenes mediante el campo busqueda.  
 - Visualización de resultados de busqueda o tendencia seleccionada en una galeria responsive.  
@@ -14,7 +14,7 @@ Desarrollado con HTML, CSS y JavaScript con una interfaz responsiva y funcional.
 
 ---
 
-## 🛠 Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - HTML5  
 - CSS3 (Flexbox + media queries)  
