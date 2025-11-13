@@ -437,7 +437,7 @@ const pintarPaginacion2=async () =>{
 
         //console.log(index==page)
         if(index==page){
-            pages.className="currentPage"
+            pages.id="currentPage"
         }
         pages.className="goToPage"
         botones.append(pages)
