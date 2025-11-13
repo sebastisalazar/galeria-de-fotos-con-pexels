@@ -10,7 +10,7 @@
 img{
     display: inline-block;
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
 } 
 
 footer{
@@ -106,9 +106,14 @@ header>nav{
     /* padding: 0.2rem; */
 }
 
-p1 {
+p1{
     padding: auto;
 }
+#pintarFavoritos,#inicio{
+    text-decoration: none;
+    color:white;
+}
+
 #currentPage, #nextPage, #previousPage{
     margin:30px 10px;
     padding: 10px 20px;
